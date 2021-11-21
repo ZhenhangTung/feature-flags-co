@@ -17,6 +17,7 @@ from azure.servicebus.exceptions import (MessageAlreadySettled,
                                          MessageNotFoundError,
                                          MessageSizeExceededError,
                                          ServiceBusError)
+from config.config_handling import get_config_value
 from experiment.constants import (ERROR_RETRY_INTERVAL, FMT,
                                   get_azure_instance_id)
 from experiment.generic_sender_receiver import (MessageHandler, Receiver,
@@ -32,19 +33,25 @@ except ImportError:
 
 from azure.core.credentials import AzureSasCredential
 
-logger = get_insight_logger('trace_azure_sb_send_consume')
-logger.setLevel(logging.INFO)
-
 debug_logger = logging.getLogger('debug_azure_sb_send_consume')
 debug_logger.setLevel(logging.INFO)
 
-# The logging levels below may need to be changed based on the logging that you want to suppress.
-uamqp_logger = get_insight_logger('uamqp')
-uamqp_logger.setLevel(logging.ERROR)
+engine = get_config_value('general', 'engine')
+if engine == 'azure' or engine == 'redis':
 
-# or even further fine-grained control, suppressing the warnings in uamqp.connection module
-uamqp_connection_logger = get_insight_logger('uamqp.connection')
-uamqp_connection_logger.setLevel(logging.ERROR)
+    logger = get_insight_logger('trace_azure_sb_send_consume')
+    logger.setLevel(logging.INFO)
+
+    # The logging levels below may need to be changed based on the logging that you want to suppress.
+    uamqp_logger = get_insight_logger('uamqp')
+    uamqp_logger.setLevel(logging.ERROR)
+
+    # or even further fine-grained control, suppressing the warnings in uamqp.connection module
+    uamqp_connection_logger = get_insight_logger('uamqp.connection')
+    uamqp_connection_logger.setLevel(logging.ERROR)
+
+else:
+    logger = logging.getLogger('trace_azure_sb_send_consume')
 
 
 class AzureServiceBus(RedisStub):
