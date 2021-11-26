@@ -131,10 +131,7 @@ services:
       - redis:/data
 
   api:
-    build:
-      context: ../FeatureFlagsCo.APIs
-      dockerfile: ../FeatureFlagsCo.APIs/Dockerfiles/Recommended/api.Dockerfile
-    image: ffc-api
+    image: sd0720/featureflagco.api
     container_name: api
     ports:
       - "5001:5001"
@@ -144,10 +141,7 @@ services:
       - docker
 
   messaging:
-    build:
-      context: ../FeatureFlagsCo.APIs
-      dockerfile: ../FeatureFlagsCo.APIs/Dockerfiles/Recommended/messaging.Dockerfile
-    image: ffc-messaging
+    image: sd0720/featureflagco.messaging
     container_name: messaging
     ports:
       - "6501:6501"
@@ -157,12 +151,7 @@ services:
       - docker
 
   portal:
-    build:
-      context: ../FeatureFlagsCo.Portal
-      dockerfile: Dockerfile
-      args:
-        API_URL: http://localhost:5001
-    image: ffc-portal
+    image: sd0720/featureflagco.portal
     container_name: portal
     ports:
       - "4200:80"
@@ -171,12 +160,7 @@ services:
       - docker
 
   ffc-experiments:
-    build:
-      context: ../FeatureFlagsCo.Experiments
-      args:
-        exptenv: k8s
-      dockerfile: Dockerfile.k8s
-    image: ffc-experiments
+    image: sd0720/featureflagco.experiment
     container_name: experiments
     environment:
       - CUSTOMERS_HOST=redis
